@@ -3,26 +3,27 @@ const americanToBritishSpelling = require('./american-to-british-spelling.js');
 const americanToBritishTitles = require("./american-to-british-titles.js")
 const britishOnly = require('./british-only.js')
 
-let translationList = []; //big translation list of everything in [american, british] form
+let wordList = []; //big translation list of everything in [american, british] form
 Object.keys(americanOnly).forEach((key) => {
-   translationList.push([
+   wordList.push([
       key, americanOnly[key]
    ])
 })
 Object.keys(americanToBritishSpelling).forEach((key) => {
-   translationList.push([
+   wordList.push([
       key,
       americanToBritishSpelling[key]
    ])
 })
 Object.keys(americanToBritishTitles).forEach((key) => {
-   translationList.push([
+   wordList.push([
       key,
       americanToBritishTitles[key]
    ])
 })
+//this one is reverse order [british, american], so make key come 2nd
 Object.keys(britishOnly).forEach((key) => {
-   translationList.push([
+   wordList.push([
       britishOnly[key],
       key
    ])
@@ -30,32 +31,40 @@ Object.keys(britishOnly).forEach((key) => {
 
 class Translator {
 
-   translate(text, mode) {
-      let newString = text;
+   translate(text, locale) {
+      let returnString = text;
 
-      if (mode === 'american-to-british') {
-         translationList.forEach((term) => {
-            newString = newString.replace(term[0], '<span class="highlight">' + term[1] + "</span>")
+      if (locale === 'american-to-british') {
+         wordList.forEach((term) => {
+            if (new RegExp(`${term[0]} `, "gi").test(returnString) || //spaces okay
+               new RegExp(`${term[0]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters
+               new RegExp(`${term[0]}$`, "gi").test(returnString)) { //or word by itself $=end of line
+               returnString = returnString.replace(term[0], '<span class="highlight">' + term[1] + "</span>")
+            }
          })
       } else {
-         translationList.forEach((term) => {
-            newString = newString.replace(term[1], '<span class="highlight">' + term[0] + "</span>")
+         wordList.forEach((term) => {
+            if (new RegExp(`${term[1]} `, "gi").test(returnString) || //spaces okay
+               new RegExp(`[^-]${term[1]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters
+               new RegExp(`${term[1]}$`, "gi").test(returnString)) { //or word by itself $=end of line
+               returnString = returnString.replace(term[1], '<span class="highlight">' + term[0] + "</span>")
+            }
          })
       }
 
       let timeRegex = /(([0-9]|0[0-9]|1[0-9]|2[0-3])(:|\.)([0-5][0-9]))/g
 
-      let times = newString.match(timeRegex)
+      let times = returnString.match(timeRegex)
       if (times) {
          times.forEach((time) => {
-            if (mode === 'american-to-british') {
-               newString = newString.replace(time, '<span class="highlight">' + time.replace(':', '.') + "</span>")
+            if (locale === 'american-to-british') {
+               returnString = returnString.replace(time, '<span class="highlight">' + time.replace(':', '.') + "</span>")
             } else {
-               newString = newString.replace(time, '<span class="highlight">' + time.replace('.', ':') + "</span>")
+               returnString = returnString.replace(time, '<span class="highlight">' + time.replace('.', ':') + "</span>")
             }
          })
       }
-      return newString
+      return returnString
    }
 }
 
