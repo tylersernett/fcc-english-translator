@@ -1,3 +1,12 @@
 # American British Translator
 
-This is the boilerplate for the American British Translator project. Instructions for building your project can be found at https://www.freecodecamp.org/learn/quality-assurance/quality-assurance-projects/american-british-translator
+Live app: https://fcc-english-translator.herokuapp.com/
+
+Things learned:
+
+Prevent interior word matches (like 'ta' in 'Acetaminophen')
+```Javascript
+if (new RegExp(`${term[1]} `, "gi").test(returnString) || //spaces okay
+               new RegExp(`[^-]${term[1]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters, or dashes before
+               new RegExp(`${term[1]}$`, "gi").test(returnString)) { //or word by itself $=end of line
+```
