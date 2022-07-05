@@ -215,7 +215,7 @@ module.exports = {
   "sun cream": "sunscreen",
   "suspender belt": "garter belt",
   "swimming costume": "swimsuit",
-  // "ta": "thank you",
+  "ta": "thank you",
   "takeaway": "takeout",
   "tannoy": "public address system",
   "tea towel": "dish towel",

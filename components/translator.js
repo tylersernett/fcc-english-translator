@@ -37,7 +37,7 @@ class Translator {
       if (locale === 'american-to-british') {
          wordList.forEach((term) => {
             if (new RegExp(`${term[0]} `, "gi").test(returnString) || //spaces okay
-               new RegExp(`${term[0]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters
+               new RegExp(`[^-]${term[0]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters, or dashes before
                new RegExp(`${term[0]}$`, "gi").test(returnString)) { //or word by itself $=end of line
                returnString = returnString.replace(term[0], '<span class="highlight">' + term[1] + "</span>")
             }
@@ -45,7 +45,7 @@ class Translator {
       } else {
          wordList.forEach((term) => {
             if (new RegExp(`${term[1]} `, "gi").test(returnString) || //spaces okay
-               new RegExp(`[^-]${term[1]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters
+               new RegExp(`[^-]${term[1]}[^A-Za-z]`, "gi").test(returnString) || //NO neighboring letters, or dashes before
                new RegExp(`${term[1]}$`, "gi").test(returnString)) { //or word by itself $=end of line
                returnString = returnString.replace(term[1], '<span class="highlight">' + term[0] + "</span>")
             }

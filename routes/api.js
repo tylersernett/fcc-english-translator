@@ -10,12 +10,14 @@ module.exports = function (app) {
     .post((req, res) => {
       console.log(req.body);
       const { text, locale } = req.body;
+      //handle errors
       if (!locale || text == undefined) {
         return res.json({ error: "Required field(s) missing" });
       } else if (text == "") {
         return res.json({ error: "No text to translate" });
       }
 
+      //perform translation
       let translation = "";
       if (locale == "american-to-british" || locale == "british-to-american") {
         translation = translator.translate(text, locale);
@@ -23,10 +25,11 @@ module.exports = function (app) {
         return res.json({ error: 'Invalid value for locale field' });
       }
 
+      //return translation only if it actually did something.
       if (translation == text || !translation) {
         res.json({ text, translation: "Everything looks good to me!" });
       } else {
-        res.json({ text, translation: translation}); //[0] lacks hightlights, [1] has highlights
+        res.json({ text, translation: translation});
       }
     });
 };
